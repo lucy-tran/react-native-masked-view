@@ -10,6 +10,8 @@ import android.view.View;
 
 import com.facebook.react.views.view.ReactViewGroup;
 
+import com.facebook.react.util.RNLog;
+
 public class RNCMaskedView extends ReactViewGroup {
   private static final String TAG = "RNCMaskedView";
 
@@ -27,7 +29,7 @@ public class RNCMaskedView extends ReactViewGroup {
     mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     mPorterDuffXferMode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
     System.out.println("Constructor called");
-    Log.d(TAG, "Constructor called");
+    RNLog.t("Constructor called");
   }
 
   @Override
@@ -37,7 +39,7 @@ public class RNCMaskedView extends ReactViewGroup {
 
     if (mBitmapMaskInvalidated) {
       System.out.println("dispatchDraw: mBitmapMaskInvalidated");
-      Log.d(TAG, "dispatchDraw: mBitmapMaskInvalidated");
+      RNLog.t("dispatchDraw: mBitmapMaskInvalidated");
       // redraw mask element to support animated elements
       updateBitmapMask();
 
@@ -47,7 +49,7 @@ public class RNCMaskedView extends ReactViewGroup {
     // draw the mask
     if (mBitmapMask != null) {
       System.out.println("dispatchDraw: mBitmapMask!= null");
-      Log.d(TAG, "dispatchDraw: mBitmapMask != null");
+      RNLog.t("dispatchDraw: mBitmapMask != null");
       mPaint.setXfermode(mPorterDuffXferMode);
       canvas.drawBitmap(mBitmapMask, 0, 0, mPaint);
       mPaint.setXfermode(null);
@@ -58,19 +60,19 @@ public class RNCMaskedView extends ReactViewGroup {
   public void onDescendantInvalidated(View child, View target) {
     super.onDescendantInvalidated(child, target);
     System.out.println("onDescendantInvalidated");
-    Log.d(TAG, "onDescendantInvalidated");
+    RNLog.t("onDescendantInvalidated");
 
     if (!mBitmapMaskInvalidated) {
       System.out.println("onDescendantInvalidated: !mBitmapMaskInvalidated");
-      Log.d(TAG, "onDescendantInvalidated: !mBitmapMaskInvalidated");
+      RNLog.t("onDescendantInvalidated: !mBitmapMaskInvalidated");
 
       View maskView = getChildAt(0);
       if (maskView != null) {
         System.out.println("onDescendantInvalidated: maskView!=null");
-        Log.d(TAG, "onDescendantInvalidated: maskView!=null");
+        RNLog.t("onDescendantInvalidated: maskView!=null");
         if (maskView.equals(child)) {
           System.out.println("onDescendantInvalidated: maskView!.equals(child)");
-          Log.d(TAG, "onDescendantInvalidated: maskView!.equals(child)");
+          RNLog.t("onDescendantInvalidated: maskView!.equals(child)");
           mBitmapMaskInvalidated = true;
         }
       }
@@ -81,12 +83,12 @@ public class RNCMaskedView extends ReactViewGroup {
   protected void onLayout(boolean changed, int l, int t, int r, int b) {
     super.onLayout(changed, l, t, r, b);
     System.out.println("onLayout");
-    Log.d(TAG, "onLayout");
+    RNLog.t("onLayout");
 
     if (changed) {
       mBitmapMaskInvalidated = true;
       System.out.println("onLayout: changed");
-      Log.d(TAG, "onLayout: changed");
+      RNLog.t("onLayout: changed");
     }
   }
 
@@ -95,36 +97,36 @@ public class RNCMaskedView extends ReactViewGroup {
     super.onAttachedToWindow();
     mBitmapMaskInvalidated = true;
     System.out.println("onAttachedToWindow");
-    Log.d(TAG, "onAttachedToWindow");
+    RNLog.t("onAttachedToWindow");
   }
 
   private void updateBitmapMask() {
     System.out.println("updateBitmapMask");
-    Log.d(TAG, "updateBitmapMask");
+    RNLog.t("updateBitmapMask");
 
     if (this.mBitmapMask != null) {
       this.mBitmapMask.recycle();
       System.out.println("updateBitmapMask: != null 1");
-      Log.d(TAG, "updateBitmapMask: != null 1");
+      RNLog.t("updateBitmapMask: != null 1");
     }
 
     View maskView = getChildAt(0);
     if (maskView != null) {
       System.out.println("updateBitmapMask: != null 2");
-      Log.d(TAG, "updateBitmapMask: != null 2");
+      RNLog.t("updateBitmapMask: != null 2");
       maskView.setVisibility(View.VISIBLE);
       this.mBitmapMask = getBitmapFromView(maskView);
       maskView.setVisibility(View.INVISIBLE);
     } else{
       System.out.println("updateBitmapMask: == null");
-      Log.d(TAG, "updateBitmapMask: == null");
+      RNLog.t("updateBitmapMask: == null");
       this.mBitmapMask = null;
     }
   }
 
   public static Bitmap getBitmapFromView(final View view) {
     System.out.println("getBitmapFromView");
-    Log.d(TAG, "getBitmapFromView");
+    RNLog.t("getBitmapFromView");
     view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
 
     if (view.getMeasuredWidth() <= 0 || view.getMeasuredHeight() <= 0) {
@@ -143,7 +145,7 @@ public class RNCMaskedView extends ReactViewGroup {
 
   public void setRenderingMode(String renderingMode) {
     System.out.println("setRenderingMode");
-    Log.d(TAG, "setRenderingMode");
+    RNLog.t("setRenderingMode: " + renderingMode);
     if (renderingMode.equals("software")) {
       setLayerType(LAYER_TYPE_SOFTWARE, null);
     } else {
